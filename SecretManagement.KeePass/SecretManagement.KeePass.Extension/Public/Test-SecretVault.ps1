@@ -18,15 +18,15 @@ function Test-SecretVault {
         $DBConnection = (Get-Variable -Name "Vault_$VaultName" -Scope Script -ErrorAction Stop).Value
         if (-not $DBConnection.isOpen) {
             Write-PSFMessage -Level Error 'Connection closed, starting a new connection'
-            return $false
         }
         if (Test-DBChanged $DBConnection) {
             $dbConnection.close()
             Write-PSFMessage -Level Error 'Database file on disk has changed, starting a new connection'
-            return $false
         }
-        Write-PSFMessage -Level Verbose "Vault ${VaultName}: Connection already open, using existing connection"
-        return $dbConnection.isOpen
+        else {
+            Write-PSFMessage -Level Verbose "Vault ${VaultName}: Connection is open and database file has not changed"
+            return $dbConnection.isOpen
+        }
     } catch {
         Write-PSFMessage -Level Verbose "${VaultName}: $PSItem"
     }
